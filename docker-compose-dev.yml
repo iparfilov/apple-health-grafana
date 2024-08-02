@@ -12,7 +12,7 @@ services:
   ingester:
     build: ./ingester
     volumes:
-    - ./tests/test-export.zip:/export.zip
+    - ./tests/export.zip:/export.zip
 
 volumes:
   influx-data:

@@ -19,7 +19,7 @@ def parse_date_as_timestamp(v: Any) -> int:
     return int(dt.fromisoformat(v).timestamp())
 
 
-def AppleStandHourFormatter(record: dict) -> list:
+def AppleStandHourFormatter(record: dict, user_id: str) -> list:
     date = parse_date_as_timestamp(record.get("startDate", 0))
     unit = record.get("unit", "unit")
     device = record.get("sourceName", "unknown")
@@ -29,7 +29,7 @@ def AppleStandHourFormatter(record: dict) -> list:
         "measurement": "AppleStandHour",
         "time": date,
         "fields": {"value": value},
-        "tags": {"unit": unit, "device": device},
+        "tags": {"unit": unit, "device": device, "user_id": user_id},
     }]
 
 
@@ -51,7 +51,7 @@ sleep_states_short_lookup={
     "HKCategoryValueSleepAnalysisAwake":"Awake",
 }
 
-def SleepAnalysisFormatter(record: dict) -> dict:
+def SleepAnalysisFormatter(record: dict, user_id: str) -> list:
     start_date = dt.fromisoformat(record.get("startDate"))
     start_date.replace(second=0)
     end_date = dt.fromisoformat(record.get("endDate"))
@@ -66,7 +66,7 @@ def SleepAnalysisFormatter(record: dict) -> dict:
             'measurement':"SleepAnalysisTimes-{}".format(device),
             "time":int(start_date.timestamp()),
             "fields": {"value":state},
-            "tags": {}
+            "tags": {"user_id": user_id}
         })
         start_date += timedelta(minutes=1)
 
@@ -74,6 +74,6 @@ def SleepAnalysisFormatter(record: dict) -> dict:
             'measurement':'SleepAnalysis',
             "time":start_date,
             "fields": {"start": int(dt.fromisoformat(record.get("startDate")).timestamp()),"stop":int(dt.fromisoformat(record.get("endDate")).timestamp())},
-            "tags": {"unit": 'seconds', "device": device,'state':sleep_states_short_lookup.get(record.get("value"),"Unspecified")}
+            "tags": {"unit": 'seconds', "device": device,'state':sleep_states_short_lookup.get(record.get("value"),"Unspecified"),"user_id": user_id}
         })
     return minutes_in_bed

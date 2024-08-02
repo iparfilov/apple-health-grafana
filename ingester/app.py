@@ -47,7 +47,8 @@ def format_route_point(
     return datapoint
 
 
-def format_record(record: dict[str, Any]) -> dict[str, Any]:
+#def format_record(record: dict[str, Any]) -> dict[str, Any]:
+def format_record(record: dict[str, Any], user_id: str) -> list[dict[str, Any]]:
     """format a export health xml record for influx"""
     measurement = (
         record.get("type", "Record")
@@ -57,9 +58,9 @@ def format_record(record: dict[str, Any]) -> dict[str, Any]:
     )
 
     if measurement == "AppleStandHour":
-        return AppleStandHourFormatter(record)
+        return AppleStandHourFormatter(record, user_id)
     if measurement == "SleepAnalysis":
-        return SleepAnalysisFormatter(record)
+        return SleepAnalysisFormatter(record, user_id)
 
     date = parse_date_as_timestamp(record.get("startDate", "2024-01-01T01:01:01"))
     value = parse_float_with_try(record.get("value", 1))
@@ -70,11 +71,11 @@ def format_record(record: dict[str, Any]) -> dict[str, Any]:
         "measurement": measurement,
         "time": date,
         "fields": {"value": value},
-        "tags": {"unit": unit, "device": device},
+        "tags": {"unit": unit, "device": device, "user_id": user_id},
     }]
 
 
-def format_workout(record: dict[str, Any]) -> dict[str, Any]:
+def format_workout(record: dict[str, Any], user_id: str) -> dict[str, Any]:
     """format a export health xml workout record for influx"""
     measurement = record.get("workoutActivityType", "Workout").removeprefix(
         "HKWorkoutActivityType"
@@ -88,7 +89,7 @@ def format_workout(record: dict[str, Any]) -> dict[str, Any]:
         "measurement": measurement,
         "time": date,
         "fields": {"value": value},
-        "tags": {"unit": unit, "device": device},
+        "tags": {"unit": unit, "device": device, "user_id": user_id},
     }
 
 
@@ -122,7 +123,7 @@ def process_workout_routes(client: InfluxDBClient) -> None:
         print("No workout routes found, skipping ...")
 
 
-def process_health_data(client: InfluxDBClient) -> None:
+def process_health_data(client: InfluxDBClient, user_id: str) -> None:
     export_xml_files = [f for f in os.listdir(EXPORT_PATH) if EXPORT_XML_REGEX.match(f)]
     if not export_xml_files:
         print("No export file found, skipping...")
@@ -143,10 +144,10 @@ def process_health_data(client: InfluxDBClient) -> None:
             points_sources.add(elem.get("sourceName", "unknown"))
 
             if elem.tag == "Record":
-                rec = format_record(elem)
+                rec = format_record(elem, user_id)
                 records += rec
             elif elem.tag == "Workout":
-                records.append(format_workout(elem))
+                records.append(format_workout(elem, user_id))
             elem.clear()
         except Exception as unknown_err:
             print(f"{etree.tostring(elem).decode('UTF-8')}: {unknown_err}")
@@ -195,7 +196,8 @@ if __name__ == "__main__":
             print("Waiting on influx to be ready..")
             time.sleep(1)
 
-    process_workout_routes(client)
-    process_health_data(client)
+    user_id = "user123"  # Example user ID
+    #process_workout_routes(client)
+    process_health_data(client,user_id)
     push_sources(client)
     print("All done! You can now check grafana.")

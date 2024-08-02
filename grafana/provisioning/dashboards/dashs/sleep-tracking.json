@@ -160,17 +160,15 @@
           "policy": "autogen",
           "refId": "A",
           "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
+          "tags": [
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
+            }
           ],
-          "tags": []
+          "query": "SELECT \"value\" FROM \"autogen\"./^$sleep_sources$/ WHERE \"user_id\" =~ /$user_id/ AND $timeFilter",
+          "rawQuery": true
         }
       ],
       "title": "Sleep analysis",
@@ -233,7 +231,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 2) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 2) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -252,6 +250,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -481,7 +484,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 4) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 4) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -500,6 +503,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -622,7 +630,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 3) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 3) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -641,6 +649,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -763,7 +776,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 2) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 2) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -782,6 +795,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -904,7 +922,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 1) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 1) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -923,6 +941,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -1045,7 +1068,7 @@
           "measurement": "SleepAnalysisTimes-Apple Watch",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 1) AND $timeFilter",
+          "query": "SELECT count(\"value\") FROM \"autogen\"./^$sleep_sources$/ WHERE (\"value\"::field = 1) AND \"user_id\" =~ /$user_id/ AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1064,6 +1087,11 @@
               "key": "value::field",
               "operator": "=",
               "value": "2"
+            },
+            {
+              "key": "user_id",
+              "operator": "=~",
+              "value": "$user_id"
             }
           ]
         },
@@ -1134,32 +1162,55 @@
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
-  "templating": {
-    "list": [
-      {
-        "current": {
-          "selected": false,
-          "text": "SleepAnalysisTimes-Apple Watch",
-          "value": "SleepAnalysisTimes-Apple Watch"
-        },
-        "datasource": {
-          "type": "influxdb",
-          "uid": "influx"
-        },
-        "definition": "show measurements WITH MEASUREMENT =~ /SleepAnalysisTimes.*/",
-        "hide": 0,
-        "includeAll": false,
-        "multi": false,
-        "name": "sleep_sources",
-        "options": [],
-        "query": "show measurements WITH MEASUREMENT =~ /SleepAnalysisTimes.*/",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      }
-    ]
+"templating": {
+  "list": [
+    {
+      "current": {
+        "selected": false,
+        "text": "SleepAnalysisTimes-Apple Watch",
+        "value": "SleepAnalysisTimes-Apple Watch"
+      },
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influx"
+      },
+      "definition": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /SleepAnalysisTimes.*/",
+      "hide": 0,
+      "includeAll": false,
+      "multi": false,
+      "name": "sleep_sources",
+      "options": [],
+      "query": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /SleepAnalysisTimes.*/",
+      "refresh": 1,
+      "regex": "",
+      "skipUrlSync": false,
+      "sort": 0,
+      "type": "query"
+    },
+    {
+      "current": {
+        "selected": false,
+        "text": "All",
+        "value": ".*"
+      },
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influx"
+      },
+      "definition": "SHOW TAG VALUES WITH KEY = \"user_id\"",
+      "hide": 0,
+      "includeAll": true,
+      "multi": false,
+      "name": "user_id",
+      "options": [],
+      "query": "SHOW TAG VALUES WITH KEY = \"user_id\"",
+      "refresh": 1,
+      "regex": "",
+      "skipUrlSync": false,
+      "sort": 0,
+      "type": "query"
+    }
+  ]
   },
   "time": {
     "from": "now-7d",
