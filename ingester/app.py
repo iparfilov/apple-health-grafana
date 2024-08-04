@@ -16,7 +16,10 @@ import gpxpy
 from gpxpy.gpx import GPXTrackPoint
 from influxdb import InfluxDBClient
 
-ZIP_PATH = "/export.zip"
+
+ZIP_PATH = os.getenv("ZIP_FILE_PATH", "/export.zip")
+USER_ID = os.getenv("USER_ID", "default_user")
+
 ROUTES_PATH = "/export/apple_health_export/workout-routes/"
 EXPORT_PATH = "/export/apple_health_export"
 EXPORT_XML_REGEX = re.compile("(export|导出)\\.xml",re.IGNORECASE)
@@ -188,7 +191,7 @@ if __name__ == "__main__":
     while True:
         try:
             client.ping()
-            client.drop_database("health")
+            #client.drop_database("health")
             client.create_database("health")
             print("Influx is ready.")
             break
@@ -196,7 +199,7 @@ if __name__ == "__main__":
             print("Waiting on influx to be ready..")
             time.sleep(1)
 
-    user_id = "user123"  # Example user ID
+    user_id = USER_ID  # Example user ID
     #process_workout_routes(client)
     process_health_data(client,user_id)
     push_sources(client)

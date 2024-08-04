@@ -11,6 +11,9 @@ services:
     - influx-data:/var/lib/influxdb
   ingester:
     build: ./ingester
+    environment:
+      - ZIP_FILE_PATH=/export.zip  # This will be set dynamically
+      - USER_ID=Vibhu  # This will be set dynamically
     volumes:
     - ./tests/export.zip:/export.zip
 
