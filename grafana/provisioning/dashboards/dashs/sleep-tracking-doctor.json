@@ -1190,19 +1190,25 @@
     {
       "current": {
         "selected": false,
-        "value": "${user_id}",
-        "text": "${user_id}"
+        "text": "All",
+        "value": ".*"
       },
       "datasource": {
         "type": "influxdb",
         "uid": "influx"
       },
-      "hide": 2,
+      "definition": "SHOW TAG VALUES WITH KEY = \"user_id\"",
+      "hide": 0,
+      "includeAll": true,
+      "multi": false,
       "name": "user_id",
-      "query": "${user_id}",
+      "options": [],
+      "query": "SHOW TAG VALUES WITH KEY = \"user_id\"",
+      "refresh": 1,
+      "regex": "",
       "skipUrlSync": false,
-      "type": "custom",
-      "refresh": 2
+      "sort": 0,
+      "type": "query"
     }
   ]
   },
